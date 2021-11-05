@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->enum('user_role',['admin','user'])->default('user');
             $table->string('avatar')->nullable();
-            $table->boolean('otp')->default('0');
+            $table->boolean('otp_verified')->default('0');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('registered_at')->nullable();
             $table->rememberToken();

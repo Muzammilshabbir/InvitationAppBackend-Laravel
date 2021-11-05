@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/invite', [AdminController::class,'invite']);
 Route::post('/register/{token}',[AuthController::class,'register']);
 
-Route::group(['middleware'=>['auth:sanctum']],function(){
+Route::group(['middleware'=>['auth:sanctum','checkStatus']],function(){
     Route::post('/confirm-pin',[AuthController::class,'confirmPin']);
     Route::post('update-profile',[UserController::class,'updateProfile']);
 });

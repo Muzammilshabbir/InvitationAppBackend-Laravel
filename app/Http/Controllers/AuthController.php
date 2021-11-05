@@ -90,11 +90,18 @@ class AuthController extends Controller
         ->where('user_id',Auth::id())
         ->first();
 
-        return $otp->user;
         if($otp){
+
+            if(!$otp->user){
+                return response()->json(['message'=>'User does not exist'],200);
+            }
+
+            $otp->user->update([
+                'otp_verified' => 1
+            ]);
+
             return response()->json(['message'=>'Pin Verified Successfully'],200);
         }
-
 
         return response()->json(['message'=>'Invalid Pin'],422);
     }
