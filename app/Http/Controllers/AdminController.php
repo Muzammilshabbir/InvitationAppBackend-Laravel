@@ -35,5 +35,8 @@ class AdminController extends Controller
             $message->from('test@mail.com', 'Test');
             $message->to($request->email)->subject('Signup Invitation');
         });
+
+        return response()->json(['message'=>'Email Sent Successfully'],200);
+
     }
 }

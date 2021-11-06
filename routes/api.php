@@ -20,10 +20,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/invite', [AdminController::class,'invite']);
+Route::post('/login',[AuthController::class,'login'])->middleware('checkStatus');
 Route::post('/register/{token}',[AuthController::class,'register']);
 
+Route::post('/confirm-pin',[AuthController::class,'confirmPin'])->middleware('auth:sanctum');
+
 Route::group(['middleware'=>['auth:sanctum','checkStatus']],function(){
-    Route::post('/confirm-pin',[AuthController::class,'confirmPin']);
-    Route::post('update-profile',[UserController::class,'updateProfile']);
+    
+    Route::post('update-profile',[AuthController::class,'updateProfile']);
+    Route::post('/logout',[AuthController::class,'logout']);
+});
+
+Route::group(['middleware'=>['auth:sanctum','checkRole']],function(){
+
+    Route::post('/invite', [AdminController::class,'invite']);
+
 });

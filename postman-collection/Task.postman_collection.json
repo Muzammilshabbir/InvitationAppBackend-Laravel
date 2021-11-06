@@ -1,10 +1,99 @@
 {
 	"info": {
-		"_postman_id": "22042fbd-3c43-43ac-810d-643037e2a6f2",
+		"_postman_id": "c9059631-3094-4b31-8d0d-217768eda00b",
 		"name": "Task",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "tesr@mail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/task/public/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"task",
+						"public",
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invite",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "5|nYgPtKf3wORvTXtbs7HG5ISs24ITqeVEIA0o5gAn",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "dasdasd@mail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/task/public/api/invite",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"task",
+						"public",
+						"api",
+						"invite"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "register",
 			"protocolProfileBehavior": {
@@ -24,9 +113,8 @@
 					"formdata": [
 						{
 							"key": "user_name",
-							"value": "test",
-							"type": "text",
-							"disabled": true
+							"value": "teasdasdasdasdasdasd",
+							"type": "text"
 						},
 						{
 							"key": "email",
@@ -37,13 +125,12 @@
 						{
 							"key": "password",
 							"value": "123123",
-							"type": "text",
-							"disabled": true
+							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost/task/public/api/register",
+					"raw": "http://localhost/task/public/api/register/IOFJ6FFdmYUqZTla1636149783",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -52,27 +139,153 @@
 						"task",
 						"public",
 						"api",
-						"register"
+						"register",
+						"IOFJ6FFdmYUqZTla1636149783"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "invite",
+			"name": "confirm-pin",
 			"request": {
-				"method": "GET",
-				"header": [],
-				"url": null
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "1|byb3ZzpWcvKLL8danX0rb6adyeF9bBJdZCctykuO",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "pin",
+							"value": "61260",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/task/public/api/confirm-pin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"task",
+						"public",
+						"api",
+						"confirm-pin"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "confirm-pin",
+			"name": "profile-update",
 			"request": {
-				"method": "GET",
-				"header": [],
-				"url": null
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "1|byb3ZzpWcvKLL8danX0rb6adyeF9bBJdZCctykuO",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_name",
+							"value": "asasa",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "test@mail.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "avatar",
+							"value": "asda",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/task/public/api/update-profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"task",
+						"public",
+						"api",
+						"update-profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "3|nxkTzS9oOdqiUODmim5IHbPWCKyKhyFQgtTHrVgC",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost/task/public/api/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"task",
+						"public",
+						"api",
+						"logout"
+					]
+				}
 			},
 			"response": []
 		}

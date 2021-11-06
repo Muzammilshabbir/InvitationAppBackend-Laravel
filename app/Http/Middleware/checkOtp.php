@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class checkOtp
 {
@@ -17,10 +18,20 @@ class checkOtp
      */
     public function handle(Request $request, Closure $next)
     {
-      $userVerified = Auth::user()->where('otp_verified',1)->first();
+      if(Auth::user()){
+        $userVerified = Auth::user()->where('otp_verified',1)->first();
 
-      if(!$userVerified){
-            return response()->json(["message"=>"please verify your email"],422);
+        if(!$userVerified){
+          return response()->json(["message"=>"please verify your email"],422);
+        }
+
+      }else{
+        //for login route
+        $user = User::where('email',$request->email)->where('otp_verified',1)->first();
+
+        if(!$user){
+          return response()->json(["message"=>"please verify your email"],422);
+        }
       }
         return $next($request);
     }

@@ -9,9 +9,41 @@ use App\Models\InvitationLink;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Auth;
+use Hash;
 
 class AuthController extends Controller
 {
+
+    public function login(Request $request)
+    {
+        $rules =  [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
+
+        if ($validation->errors()->count()) {
+            return response()->json($validation->messages()->all(), 422);
+        }
+        //Check Email
+        $user = User::where('email', $request->email)->first();
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            $response = [
+                'message' => 'Invalid Credentials',
+            ];
+            return response($response, 422);
+        }
+        $token = $user->createToken('TodoManager-Api')->plainTextToken;
+
+        $response = [
+            'token' => $token,
+            'type' => 'bearer',
+            'user' => $user,
+        ];
+
+        return response($response, 200);
+    }
 
     public function register(Request $request,$token)
     {
@@ -24,9 +56,9 @@ class AuthController extends Controller
         $request['email'] = $link->email;
 
         $rules =  [
-            'user_name' => 'required|string',
+            'user_name' => 'required|string|min:4|max:20',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string'
+            'password' => 'required|string|confirmed'
         ];
 
         $validation = Validator::make($request->all(), $rules);
@@ -41,7 +73,7 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        // $link->delete();
+        $link->delete();
 
         $otp = $this->generateOtp(5);
 
@@ -61,17 +93,11 @@ class AuthController extends Controller
         $response = [
             'token'=>$token,
             'type' => 'bearer',
-            'user' => $user
+            'user' => $user,
+            'otp' => $otp
         ];
 
         return response($response, 201);
-    }
-
-    protected function generateOtp($digits) {
-
-        $min = pow(10, $digits - 1);
-        $max = pow(10, $digits) - 1;
-        return mt_rand($min, $max);
     }
 
     public function confirmPin(Request $request){
@@ -97,8 +123,11 @@ class AuthController extends Controller
             }
 
             $otp->user->update([
-                'otp_verified' => 1
+                'otp_verified' => 1,
+                'registered_at' => now()
             ]);
+
+            $otp->delete();
 
             return response()->json(['message'=>'Pin Verified Successfully'],200);
         }
@@ -107,17 +136,61 @@ class AuthController extends Controller
     }
 
 
-    public function updateProfile(){
-        $rules =  [
-            'user_name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string'
-        ];
+    public function updateProfile(Request $request){
 
+        $user = Auth::user();
+
+        $rules =  [
+            'name' => 'string',
+            'user_name' => 'required|string|min:4|max:20',
+            'email' => 'required|email|unique:users,email,' .$user->id,
+            'avatar' => 'image',
+            'password' => 'string'
+        ];
         $validation = Validator::make($request->all(), $rules);
 
         if ($validation->errors()->count()) {
             return response()->json($validation->messages()->all(), 422);
         }
+
+        if ($request->file('avatar')) { //upload profile image
+            $profile_image = $user->avatar;
+            
+            $profile_path = 'upload/profile_image';
+            if ($profile_image) {
+                @unlink($profile_path . '/' . $profile_image);
+                @unlink($profile_path . '/thumb-' . $profile_image);
+            }
+            $profile_image = $request->file('avatar')->hashName();
+            $request->file('avatar')->move($profile_path, $profile_image);
+           
+            $user->avatar = $profile_image;
+        }
+
+
+        $user->name = $request->name;
+        $user-> user_name = $request->user_name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return response()->json(['message'=>'Profile Updated Successfully'],200);
+
+    }
+
+    protected function generateOtp($digits) {
+
+        $min = pow(10, $digits - 1);
+        $max = pow(10, $digits) - 1;
+        return mt_rand($min, $max);
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens()->delete();
+        $response = [
+            'message' => 'Logged Out'
+        ];
+        return response($response, 200);
     }
 }
