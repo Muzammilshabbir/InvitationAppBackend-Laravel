@@ -18,8 +18,10 @@ class checkOtp
      */
     public function handle(Request $request, Closure $next)
     {
+
       if(Auth::user()){
-        $userVerified = Auth::user()->where('otp_verified',1)->first();
+
+        $userVerified = User::where('id',Auth::id())->where('otp_verified',1)->first();
 
         if(!$userVerified){
           return response()->json(["message"=>"please verify your email"],422);
