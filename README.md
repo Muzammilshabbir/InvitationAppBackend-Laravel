@@ -5,7 +5,7 @@ Use the following steps to run the application
 3. add your db configuration and add your mailtrap sandbox credentials in .env file
 4. run php artisan key:generate
 5. run php artisan migrate --seed
-6. import postman collection from postman-collection for testing the APIs
+6. import postman collection from postman-collection folder for testing the APIs
 
 sign in as admin credentials:
 
